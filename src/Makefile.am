@@ -1,6 +1,6 @@
 VERSION_INFO = 2:0:0
 
-AM_CFLAGS = -g -O2 -Wall -Werror -Wno-deprecated-declarations -fno-strict-aliasing -std=gnu99 -D_GNU_SOURCE
+AM_CFLAGS = -g -O3 -Wall -Werror -Wno-deprecated-declarations -fno-strict-aliasing -std=gnu99 -D_GNU_SOURCE
 AM_CFLAGS += $(PTHREAD_CFLAGS)
 if !USE_SYSTEM_SHARED_LIB
 AM_CFLAGS += -I$(top_srcdir)/libbloom
@@ -19,7 +19,7 @@ SS_COMMON_LIBS += -lbloom -lcork -lcorkipset
 endif
 SS_COMMON_LIBS += -lev -lsodium -lm
 
-bin_PROGRAMS = ss-local ss-tunnel ss-server
+bin_PROGRAMS = ss-local ss-tunnel ss-server ss-check
 if !BUILD_WINCOMPAT
 bin_PROGRAMS += ss-manager
 endif
@@ -85,6 +85,9 @@ ss_server_CFLAGS = $(AM_CFLAGS) -DMODULE_REMOTE
 ss_manager_CFLAGS = $(AM_CFLAGS) -DMODULE_MANAGER
 
 if BUILD_REDIRECTOR
+ss_check_SOURCES = check.c
+ss_check_LDADD = $(SS_COMMON_LIBS)
+ss_check_LDADD += -lcares
 bin_SCRIPTS = ss-nat
 bin_PROGRAMS += ss-redir
 ss_redir_SOURCES = utils.c \
